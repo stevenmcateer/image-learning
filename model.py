@@ -10,10 +10,14 @@ model.add(Dense(10, input_shape=(28*28, ), kernel_initializer='he_normal')) # fi
 model.add(Activation('relu'))
 #
 #
+# Initialize weights randomly for each layer
+# Experiment with ReLu Activation Units, as well as SeLu and Tanh
+# Experiment with number of layers/num of neurons per layer
 #
 # Fill in Model Here
 #
 #
+# Leave last layer the same
 model.add(Dense(10, kernel_initializer='he_normal')) # last layer
 model.add(Activation('softmax'))
 
