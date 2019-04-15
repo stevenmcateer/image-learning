@@ -2,6 +2,8 @@ from keras.models import Sequential
 from keras.layers import Dense, Activation
 import keras
 import numpy as np
+import matplotlib.pyplot as plot
+import matplotlib.colors as colors
 
 
 def main():
@@ -19,7 +21,7 @@ def main():
     model = build_model(training_images, training_labels, val_images, val_labels, 12)
 
     # Test the model
-    test_model(model, testing_images, testing_labels)
+    errors = test_model(model, testing_images, testing_labels)
 
 def preprocess_images(images):
     # Flatten the matrices to 1x784 vectors
@@ -112,23 +114,93 @@ def build_model(x_train, y_train, x_val, y_val, epochs):
 
     # y_train = keras.utils.to_categorical(y_train, 3900)
 
-
     # Train Model
     history = model.fit(x_train, y_train,
                         validation_data = (x_val, y_val),
                         epochs=epochs,
                         batch_size=64)
 
+    # Create the charts
+    create_charts(history, epochs)
+
     return model
 
+def create_charts(history, epochs):
+    loss = history.history['loss']
+    acc = history.history['acc']
+    val_loss = history.history['val_loss']
+    val_acc = history.history['val_acc']
+
+    epoch_list = []
+    for ep in range(epochs):
+        epoch_list.append(ep)
+
+    plot.plot(epoch_list, acc, 'ro', epoch_list, val_acc, 'bo')
+    plot.ylabel("Training Acc, Validation Acc")
+    plot.xlabel("Epochs")
+    plot.grid(True)
+    plot.xticks(epoch_list)
+    plot.savefig("acc_vs_val_plot.png")
+    plot.close()
+
+
 def test_model(model, testing_images, testing_labels):
+    errors = []
+
+    # Predict and intialize matrix
+    results = model.predict_on_batch(testing_images)
+    confusion_matrix = [[0 for col in range(10)] for row in range(10)]
+
+    i = 0
+    num_correct = 0
+
+    # Find how many label are correct
+    testing_labels = testing_labels.tolist()
+    for result in results:
+        actual = testing_labels[i]
+        result = result.tolist()
+        r = result.index(max(result))
+        a = actual.index(max(actual))
+
+        confusion_matrix[a][r] +=1
+
+        if a == r:
+            num_correct += 1
+        else:
+            errors.append(testing_images[i])
+
+        i += 1
+
+
+    # Print the confusion matrix
+    print("Confusion Matrix:\n", np.array(confusion_matrix))
+    print("Total Tests:", len(results),
+		"\nNumber of Accurate Labels:", num_correct,
+		"\nAccuracy:", num_correct/len(results))
+
+    # Save the matrix
+    rows_and_cols = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    fig, ax = plot.subplots()
+    for item in [fig, ax]:
+        item.patch.set_visible(False)
+
+    vals = np.around(confusion_matrix, 2)
+    normal = colors.Normalize(vals.min()-1, vals.max()+1)
+
+    table = plot.table(cellText=confusion_matrix,
+        rowLabels=rows_and_cols,
+        colLabels=rows_and_cols,
+        loc='top',
+        cellColours=plot.cm.Wistia(normal(vals)))
+    table.scale(1, 5)
+    plot.subplots_adjust(left=0.2, top=0.35)
+    plot.axis('off')
+    plot.savefig("ann_confusion_matrix.png")
+    plot.close()
+
+
     return errors
-#
-#
-# # Report Results
-#
-# print(history.history)
-# model.predict()
+
 
 
 if __name__ == '__main__':
