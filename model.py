@@ -16,7 +16,7 @@ def main():
     (training_images, training_labels), (val_images, val_labels), (testing_images, testing_labels) = split_data(images, labels)
 
     # Create the model
-    model = build_model(training_images, training_labels, val_images, val_labels, 10)
+    model = build_model(training_images, training_labels, val_images, val_labels, 12)
 
     # Test the model
     test_model(model, testing_images, testing_labels)
@@ -80,13 +80,14 @@ def split_data(images, labels):
         i+=1
 
 
-    print("Length of training is", len(training_images), "should be", training_length)
-    print("Length of validation is", len(val_images), "should be", val_length)
-    print("Length of testing is", len(testing_images), "should be", testing_length)
+    # print("Length of training is", len(training_images), "should be", training_length)
+    # print("Length of validation is", len(val_images), "should be", val_length)
+    # print("Length of testing is", len(testing_images), "should be", testing_length)
 
-    return (np.array(training_images), np.array(training_length)), \
-           (np.array(val_images), np.array(val_length)), \
-           (np.array(testing_images), np.array(testing_length))
+
+    return (np.array(training_images), np.array(training_labels)), \
+           (np.array(val_images), np.array(val_labels)), \
+           (np.array(testing_images), np.array(testing_labels))
 
 def build_model(x_train, y_train, x_val, y_val, epochs):
     model = Sequential() # declare model
@@ -96,9 +97,9 @@ def build_model(x_train, y_train, x_val, y_val, epochs):
     # Experiment with ReLu Activation Units, as well as SeLu and Tanh
     # Experiment with number of layers/num of neurons per layer
 
-    model.add(Dense(28*28, input_shape=(28*28, ), kernel_initializer='he_normal')) # second layer
-    model.add(Dense(28*28, input_shape=(28*28, ), kernel_initializer='he_normal')) # third layer
-    model.add(Dense(28*28, input_shape=(28*28, ), kernel_initializer='he_normal')) # fourth layer
+    # model.add(Dense(28*28, input_shape=(28*28, ), kernel_initializer='he_normal')) # second layer
+    # model.add(Dense(28*28, input_shape=(28*28, ), kernel_initializer='he_normal')) # third layer
+    # model.add(Dense(28*12, input_shape=(28*28, ), kernel_initializer='he_normal')) # fourth layer
     #
     # Leave last layer the same
     model.add(Dense(10, kernel_initializer='he_normal')) # last layer
@@ -109,7 +110,9 @@ def build_model(x_train, y_train, x_val, y_val, epochs):
                   loss='categorical_crossentropy',
                   metrics=['accuracy'])
 
-    y_train = keras.utils.to_categorical(y_train, 10)
+    # y_train = keras.utils.to_categorical(y_train, 3900)
+
+
     # Train Model
     history = model.fit(x_train, y_train,
                         validation_data = (x_val, y_val),
