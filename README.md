@@ -4,10 +4,13 @@ Steven McAteer, William Schwartz
 
 ## Description of Experiments
 
+For the Artificial Neural Network, we experimented with many different parameters to achieve our
+desired output. We experimented with the following values: number of dense layers, number of
+neurons per layer, number of epochs, and batch size. See the Model & Training Project Description
+section for more details.
 
 ## Model & Training Project Description
 
-For this algorithm, we experimented with many different parameters to achieve our desired output.
 The first thing we experimented with was adding more layers. With each layer we added, we saw a
 marginal improvement, but once we got to 6 total layers the performance started to decrease. We
 decided that 5 layers seemed to be a good fit. The next alteration we made to the ANN was changing
@@ -18,6 +21,7 @@ at this level decreased, so we kept each level at 100 neurons, with the exceptio
 of epochs per run; we found that 12 epochs seems to be the best. When increasing/decreasing the
 number of epochs, performance suffered. Finally, we lowered the batch size significantly from 512 to
 10. This increased performance significantly.
+
 
 ## Plot
 
@@ -54,17 +58,17 @@ Recall:
 A copy of this trained model is saved as trained_model.h5
 
 
-
 # Decision Trees
 
 ## Feature Extraction & Explanation
 
 The features that we added to our decision tree algorithm are the following:
 
-1. Average row totals:
-2. Average column totals:
-3. Average of the whole image:
-4. Compressed image (14x14):
+1. Average row: We averaged each row of the image
+2. Average column: We averaged each column of the image
+3. Average of the whole image: We averaged the entire image into one number
+4. Compressed image: In this feature, we compressed the 28x28 image to a smaller,
+14x14 image.
 
 ## Description of Experiments
 
@@ -75,6 +79,9 @@ accuracy in this scenario. The other parameter that we played with was the min_s
 This value is defined as the minimum number of samples needed to be considered a leaf node. We
 tried limiting this to 10, but it decreased the performance. This means that by limiting the
 growth of the tree, we could not yield better results.
+
+Our features improved performance slightly, but we assume that all variations of the accuracy are
+ due to random sampling.
 
 ## Model Performance and Confusion Matrix
 

@@ -16,7 +16,7 @@ def main():
     np.random.seed(0)
 
     # Number of runs
-    epochs = 1
+    epochs = 12
 
     # Load data
     images = preprocess_images(np.load("images.npy"))
@@ -84,9 +84,9 @@ def build_model(x_train, y_train, x_val, y_val, epochs):
     # Experiment with ReLu Activation Units, as well as SeLu and Tanh
     # Experiment with number of layers/num of neurons per layer
 
-    model.add(Dense(900, input_shape=(28*28, ), kernel_initializer='he_normal')) # second layer
-    model.add(Dense(900, input_shape=(28*28, ), kernel_initializer='he_normal')) # third layer
-    model.add(Dense(12, input_shape=(28*28, ), kernel_initializer='he_normal')) # fourth layer
+    model.add(Dense(100, kernel_initializer='he_normal')) # second layer
+    model.add(Dense(100, kernel_initializer='he_normal')) # third layer
+    model.add(Dense(100, kernel_initializer='he_normal')) # fourth layer
     #
     # Leave last layer the same
     model.add(Dense(10, kernel_initializer='he_normal')) # last layer
@@ -97,13 +97,11 @@ def build_model(x_train, y_train, x_val, y_val, epochs):
                   loss='categorical_crossentropy',
                   metrics=['accuracy'])
 
-    # y_train = keras.utils.to_categorical(y_train, 3900)
-
     # Train Model
     history = model.fit(x_train, y_train,
                         validation_data = (x_val, y_val),
                         epochs=epochs,
-                        batch_size=64)
+                        batch_size=10)
 
     return model, history
 
