@@ -2,6 +2,8 @@ from keras.models import Sequential
 from keras.layers import Dense, Activation
 import keras
 import numpy as np
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plot
 import matplotlib.colors as colors
 
@@ -30,14 +32,15 @@ def preprocess_images(images):
         flat_images.append(images[i].flatten())
 
     images = np.array(flat_images)
-    # images = images.astype('float32')
-    # images /= 255
+    images = images.astype('float32')
+    images /= 255
     return images
 
 def preprocess_labels(labels):
     return keras.utils.to_categorical(labels, 10)
 
 def split_data(images, labels):
+    #TODO: this is wrong!!
     # Training set has 60%
     training_images = []
     training_labels = []
@@ -99,9 +102,9 @@ def build_model(x_train, y_train, x_val, y_val, epochs):
     # Experiment with ReLu Activation Units, as well as SeLu and Tanh
     # Experiment with number of layers/num of neurons per layer
 
-    # model.add(Dense(28*28, input_shape=(28*28, ), kernel_initializer='he_normal')) # second layer
-    # model.add(Dense(28*28, input_shape=(28*28, ), kernel_initializer='he_normal')) # third layer
-    # model.add(Dense(28*12, input_shape=(28*28, ), kernel_initializer='he_normal')) # fourth layer
+    model.add(Dense(900, input_shape=(28*28, ), kernel_initializer='he_normal')) # second layer
+    model.add(Dense(900, input_shape=(28*28, ), kernel_initializer='he_normal')) # third layer
+    model.add(Dense(12, input_shape=(28*28, ), kernel_initializer='he_normal')) # fourth layer
     #
     # Leave last layer the same
     model.add(Dense(10, kernel_initializer='he_normal')) # last layer
