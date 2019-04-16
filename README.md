@@ -2,7 +2,7 @@ Steven McAteer, William Schwartz
 
 # Run
 
-## to the CNN
+## to the ANN
 
 ```bash
 $ python model.py
