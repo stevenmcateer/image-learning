@@ -79,7 +79,6 @@ def features_dt(original_images, original_labels):
 
     images = preprocess_images(original_images)
     labels = preprocess_labels(original_labels)
-    import ipdb; ipdb.set_trace()
     features = np.concatenate((images,compress, all_avg.T, avg_row, avg_col), axis=1)
 
     (training_images, training_labels), (val_images, val_labels), (testing_images, testing_labels) = split_data(features, labels)
