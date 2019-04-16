@@ -6,6 +6,8 @@ import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plot
 import matplotlib.colors as colors
+from sklearn.model_selection import train_test_split
+import random 
 
 
 def main():
@@ -40,54 +42,13 @@ def preprocess_labels(labels):
     return keras.utils.to_categorical(labels, 10)
 
 def split_data(images, labels):
-    #TODO: this is wrong!!
-    # Training set has 60%
-    training_images = []
-    training_labels = []
-    training_length = 0.6*len(images)
+    stratified_seed = random.randint(0, 100)
 
-    # Validation set has 15%
-    val_images = []
-    val_labels = []
-    val_length = 0.15*len(images)
+    # make the STRATIFIED training set
+    training_images, verify_images, training_labels, verify_labels = train_test_split(images,labels,stratify=labels,test_size=0.4, random_state=stratified_seed) # before model building
 
-    # Test set has 25%
-    testing_images = []
-    testing_labels = []
-    testing_length = 0.25*len(images)
-
-    i = 0
-    while i < len(images):
-        random_num = np.random.randint(1,100)
-        added = False
-        while not added:
-            if random_num <= 60:
-                if len(training_images) != training_length:
-                    added = True
-                    training_images.append(images[i])
-                    training_labels.append(labels[i])
-                else:
-                    random_num = np.random.randint(60,100)
-            elif random_num <= 75:
-                if len(val_images) != val_length:
-                    added = True
-                    val_images.append(images[i])
-                    val_labels.append(labels[i])
-                else:
-                    random_num = np.random.randint(75,100)
-            else:
-                if len(testing_images) != testing_length:
-                    added = True
-                    testing_images.append(images[i])
-                    testing_labels.append(labels[i])
-                else:
-                    random_num = np.random.randint(1,75)
-        i+=1
-
-
-    # print("Length of training is", len(training_images), "should be", training_length)
-    # print("Length of validation is", len(val_images), "should be", val_length)
-    # print("Length of testing is", len(testing_images), "should be", testing_length)
+    # make the STRATIFIED testing and validation set
+    val_images, testing_images, val_labels, testing_labels = train_test_split(verify_images,verify_labels,stratify=verify_labels,test_size=0.625, random_state=stratified_seed) # before model building
 
 
     return (np.array(training_images), np.array(training_labels)), \
