@@ -31,29 +31,33 @@ number of epochs, performance suffered. Finally, we lowered the batch size signi
 
 The following 3 images were misclassified:
 
+### Actual 1, Predicted 4
 ![Actual 1, Predicted 4](/actual_1_predicted_4.png)
+### Actual 5, Predicted 3
 ![Actual 5, Predicted 3](/actual_5_predicted_3.png)
+### Actual 8, Predicted 2
 ![Actual 8, Predicted 2](/actual_8_predicted_2.png)
 
 ## Model Performance & Confusion Matrix
 
 The best performing model that we had for ANN has the following characteristics:
 
+```
 Number of layers: 5
 Number of neurons per layer, respectively: (28*28), 100, 100, 100, 10
 Epochs: 12
 Batch Size: 10
 
-Confusion Matrix:
+```
+### Confusion Matrix:
 ![Confusion Matrix](/ann_confusion_matrix.png)
 
+```
 Total Tests: 1625
 Number of Accurate Labels: 1526
 Accuracy: 0.939076923076923
-Precision:
-['0.96', '0.96', '0.94', '0.96', '0.90', '0.94', '0.95', '0.93', '0.93', '0.93']
-Recall:
-['0.98', '0.97', '0.92', '0.89', '0.95', '0.91', '0.98', '0.95', '0.94', '0.89']
+```
+![Precision/Recall](/precision_and_recall.png)
 
 A copy of this trained model is saved as trained_model.h5
 
