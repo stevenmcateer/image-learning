@@ -16,7 +16,7 @@ def main():
     np.random.seed(0)
 
     # Number of runs
-    epochs = 12
+    epochs = 1
 
     # Load data
     images = preprocess_images(np.load("images.npy"))
@@ -108,9 +108,7 @@ def build_model(x_train, y_train, x_val, y_val, epochs):
     return model, history
 
 def create_charts(history, epochs, confusion_matrix):
-    loss = history.history['loss']
     acc = history.history['acc']
-    val_loss = history.history['val_loss']
     val_acc = history.history['val_acc']
 
     epoch_list = []
@@ -143,6 +141,11 @@ def create_charts(history, epochs, confusion_matrix):
     print("Recall: ")
     recall_rounded = ["%.2f" % value for value in recall]
     print(recall_rounded)
+
+    f = open("ann_output.txt", "a")
+    f.write("\nPrecision: \n" + str(precision_rounded))
+    f.write("\nRecall: \n" + str(recall_rounded))
+    f.close()
 
     rows = ["Precision", "Recall"]
     cols = [0, 1, 2 ,3 , 4, 5, 6, 7, 8, 9]
@@ -191,8 +194,9 @@ def test_model(model, testing_images, testing_labels, history, epochs):
         i += 1
 
     # Create all charts and the confusion matrix visual
-    create_charts(history, epochs, confusion_matrix)
     create_confusion_matrix(confusion_matrix, results, num_correct)
+    create_charts(history, epochs, confusion_matrix)
+
 
     return errors
 
@@ -202,6 +206,15 @@ def create_confusion_matrix(confusion_matrix, results, num_correct):
     print("Total Tests:", len(results),
 		"\nNumber of Accurate Labels:", num_correct,
 		"\nAccuracy:", num_correct/len(results))
+
+    # Save all data to file
+    f = open("ann_output.txt", "w+")
+    f.write("Confusion Matrix:\n")
+    f.write(str(np.array(confusion_matrix)))
+    f.write("\nTotal Tests: " + str(len(results)))
+    f.write("\nNumber of Accurate Labels: " + str(num_correct))
+    f.write("\nAccuracy: " + str(num_correct/len(results)))
+
 
     # Save the matrix
     rows_and_cols = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
