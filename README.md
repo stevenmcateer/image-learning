@@ -49,18 +49,15 @@ Epochs: 12
 Batch Size: 10
 
 ```
-Confusion Matrix:
+### Confusion Matrix:
 ![Confusion Matrix](/ann_confusion_matrix.png)
 
 ```
 Total Tests: 1625
 Number of Accurate Labels: 1526
 Accuracy: 0.939076923076923
-Precision:
-['0.96', '0.96', '0.94', '0.96', '0.90', '0.94', '0.95', '0.93', '0.93', '0.93']
-Recall:
-['0.98', '0.97', '0.92', '0.89', '0.95', '0.91', '0.98', '0.95', '0.94', '0.89']
 ```
+![Precision/Recall](/precision_and_recall.png)
 
 A copy of this trained model is saved as trained_model.h5
 
