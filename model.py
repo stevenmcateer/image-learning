@@ -15,6 +15,9 @@ def main():
     # Initialize weights randomly for each layer
     np.random.seed(0)
 
+    # Number of runs
+    epochs = 12
+
     # Load data
     images = preprocess_images(np.load("images.npy"))
     labels = preprocess_labels(np.load("labels.npy"))
@@ -23,13 +26,13 @@ def main():
     (training_images, training_labels), (val_images, val_labels), (testing_images, testing_labels) = split_data(images, labels)
 
     # Create the model
-    model = build_model(training_images, training_labels, val_images, val_labels, 1)
+    model, history = build_model(training_images, training_labels, val_images, val_labels, epochs)
 
     # Save the model
     model.save("trained_model.h5")
 
     # Test the model
-    errors = test_model(model, testing_images, testing_labels)
+    errors = test_model(model, testing_images, testing_labels, history, epochs)
 
     # Save the misclassified images
     save_misclassified(errors)
@@ -102,12 +105,9 @@ def build_model(x_train, y_train, x_val, y_val, epochs):
                         epochs=epochs,
                         batch_size=64)
 
-    # Create the charts
-    create_charts(history, epochs)
+    return model, history
 
-    return model
-
-def create_charts(history, epochs):
+def create_charts(history, epochs, confusion_matrix):
     loss = history.history['loss']
     acc = history.history['acc']
     val_loss = history.history['val_loss']
@@ -117,8 +117,9 @@ def create_charts(history, epochs):
     for ep in range(epochs):
         epoch_list.append(ep)
 
-    plot.plot(epoch_list, acc, 'ro', epoch_list, val_acc, 'bo')
-    plot.ylabel("Training Acc, Validation Acc")
+    # Create Training/Val vs. epochs chart
+    plot.plot(epoch_list, acc, 'go', epoch_list, val_acc, 'bo')
+    plot.ylabel("Training Acc (Green), Validation Acc (Blue)")
     plot.xlabel("Epochs")
     plot.grid(True)
     plot.xticks(epoch_list)
@@ -126,17 +127,53 @@ def create_charts(history, epochs):
     plot.close()
 
 
-def test_model(model, testing_images, testing_labels):
+    # Create precision/recall chart
+    precision = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    recall = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+    for num in range(len(confusion_matrix)):
+        precision[num] = sum(row[num] for row in confusion_matrix)
+        precision[num] = confusion_matrix[num][num] / precision[num]
+        recall[num] = sum(confusion_matrix[num])
+        recall[num] = confusion_matrix[num][num] / recall[num]
+
+    print("Precision: ")
+    precision_rounded = ["%.2f" % value for value in precision]
+    print(precision_rounded)
+    print("Recall: ")
+    recall_rounded = ["%.2f" % value for value in recall]
+    print(recall_rounded)
+
+    rows = ["Precision", "Recall"]
+    cols = [0, 1, 2 ,3 , 4, 5, 6, 7, 8, 9]
+    fig, ax = plot.subplots()
+    for item in [fig, ax]:
+        item.patch.set_visible(False)
+    vals = np.around([precision, recall], 2)
+    normal = colors.Normalize(vals.min()-1, vals.max()+1)
+    table = plot.table(cellText=[precision_rounded, recall_rounded],
+        rowLabels=rows,
+        colLabels=cols,
+        loc='top',
+        cellColours=plot.cm.Wistia(normal(vals)))
+    table.scale(1, 5)
+    plot.subplots_adjust(left=0.2, top=0.35)
+    plot.axis('off')
+    plot.savefig("precision_and_recall.png")
+    plot.close()
+
+
+def test_model(model, testing_images, testing_labels, history, epochs):
     errors = []
 
-    # Predict and intialize matrix
+    # Predict and initialize matrix
     results = model.predict_on_batch(testing_images)
     confusion_matrix = [[0 for col in range(10)] for row in range(10)]
 
     i = 0
     num_correct = 0
 
-    # Find how many label are correct
+    # Find how many labels are correct
     testing_labels = testing_labels.tolist()
     for result in results:
         actual = testing_labels[i]
@@ -153,7 +190,13 @@ def test_model(model, testing_images, testing_labels):
 
         i += 1
 
+    # Create all charts and the confusion matrix visual
+    create_charts(history, epochs, confusion_matrix)
+    create_confusion_matrix(confusion_matrix, results, num_correct)
 
+    return errors
+
+def create_confusion_matrix(confusion_matrix, results, num_correct):
     # Print the confusion matrix
     print("Confusion Matrix:\n", np.array(confusion_matrix))
     print("Total Tests:", len(results),
@@ -179,9 +222,6 @@ def test_model(model, testing_images, testing_labels):
     plot.axis('off')
     plot.savefig("ann_confusion_matrix.png")
     plot.close()
-
-
-    return errors
 
 
 
