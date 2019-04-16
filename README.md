@@ -1,10 +1,4 @@
-HW6 for AI
-Steven McAteer
-William Schwartz
-
-# Report - Image Learning
-
-
+Steven McAteer, William Schwartz
 
 # Artificial Neural Network
 
@@ -27,15 +21,15 @@ number of epochs, performance suffered. Finally, we lowered the batch size signi
 
 ## Plot
 
-![Accuracy/Validation Plot vs. Epochs](acc_vs_val_plot.png)
+![Accuracy/Validation Plot vs. Epochs](/acc_vs_val_plot.png)
 
 ## Visualization
 
 The following 3 images were misclassified:
 
-![Actual 1, Predicted 4](actual_1_predicted_4.png)
-![Actual 5, Predicted 3](actual_5_predicted_3.png)
-![Actual 8, Predicted 2](actual_8_predicted_2.png)
+![Actual 1, Predicted 4](/actual_1_predicted_4.png)
+![Actual 5, Predicted 3](/actual_5_predicted_3.png)
+![Actual 8, Predicted 2](/actual_8_predicted_2.png)
 
 ## Model Performance & Confusion Matrix
 
@@ -47,7 +41,7 @@ Epochs: 12
 Batch Size: 10
 
 Confusion Matrix:
-![Confusion Matrix](ann_confusion_matrix.png)
+![Confusion Matrix](/ann_confusion_matrix.png)
 
 Total Tests: 1625
 Number of Accurate Labels: 1526
@@ -87,7 +81,7 @@ growth of the tree, we could not yield better results.
 The best performing model that we had for decision trees has the following characteristics:
 
 Confusion Matrix:
-![Confusion Matrix](dt_confusion_matrix.png)
+![Confusion Matrix](/dt_confusion_matrix.png)
 
 
 
