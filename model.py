@@ -6,8 +6,9 @@ import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plot
 import matplotlib.colors as colors
+from PIL import Image
 from sklearn.model_selection import train_test_split
-import random 
+import random
 
 
 def main():
@@ -22,10 +23,27 @@ def main():
     (training_images, training_labels), (val_images, val_labels), (testing_images, testing_labels) = split_data(images, labels)
 
     # Create the model
-    model = build_model(training_images, training_labels, val_images, val_labels, 12)
+    model = build_model(training_images, training_labels, val_images, val_labels, 1)
+
+    # Save the model
+    model.save("trained_model.h5")
 
     # Test the model
     errors = test_model(model, testing_images, testing_labels)
+
+    # Save the misclassified images
+    save_misclassified(errors)
+
+def save_misclassified(errors):
+    reshaped = []
+    # Reshape the errors
+    for e in errors[:4]:
+        reshaped.append((np.uint8(e[0].reshape(28, 28)), e[1], e[2]))
+
+    # Save each misclassified
+    for r in reshaped:
+        image = Image.fromarray(np.array(r[0]))
+        image.save("actual_" + str(r[1]) + "_predicted_" + str(r[2]) + ".png")
 
 def preprocess_images(images):
     # Flatten the matrices to 1x784 vectors
@@ -131,7 +149,7 @@ def test_model(model, testing_images, testing_labels):
         if a == r:
             num_correct += 1
         else:
-            errors.append(testing_images[i])
+            errors.append((testing_images[i]*255, a, r))
 
         i += 1
 
