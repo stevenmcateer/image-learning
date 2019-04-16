@@ -101,6 +101,8 @@ growth of the tree, we could not yield better results.
 Our features improved performance slightly, but we assume that all variations of the accuracy are
  due to random sampling.
 
+The Decision Tree is significantly worse that the ANN.
+
 ## Model Performance and Confusion Matrix
 
 ### Baseline
