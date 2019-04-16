@@ -16,7 +16,7 @@ def main():
     np.random.seed(0)
 
     # Number of runs
-    epochs = 1
+    epochs = 12
 
     # Load data
     images = preprocess_images(np.load("images.npy"))

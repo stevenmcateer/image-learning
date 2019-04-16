@@ -1,27 +1,145 @@
 from model import split_data, preprocess_images, preprocess_labels
 from sklearn import tree
+import scipy.misc
 import numpy as np
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plot
 import matplotlib.colors as colors
+from PIL import Image
+import statistics
 
 
 
 def main():
-    # Load data
-    images = preprocess_images(np.load("images.npy"))
-    labels = preprocess_labels(np.load("labels.npy"))
 
+    original_images = np.load("images.npy")
+    original_labels = np.load("labels.npy")
+
+    baseline_dt(original_images, original_labels)
+    restricting_tree_depth(original_images, original_labels)
+    min_samples_leaf(original_images, original_labels)
+
+    features_dt(original_images, original_labels)
+
+
+def baseline_dt(original_images, original_labels):
     # Split data into each bin
+
+    images = preprocess_images(original_images)
+    labels = preprocess_labels(original_labels)
+
     (training_images, training_labels), (val_images, val_labels), (testing_images, testing_labels) = split_data(images, labels)
 
     cl = tree.DecisionTreeClassifier()
     clf = cl.fit(training_images, training_labels)
 
-    predicted = clf.predict(val_images)
-    score = clf.score(val_images, val_labels)
-    test_model(cl, testing_images, testing_labels, "decision_tree_baseline" )
+    clf.predict(val_images)
+    clf.score(val_images, val_labels)
+    errors = test_model(cl, testing_images, testing_labels, "decision_tree_baseline" )
+    save_misclassified(errors, "decision_tree_baseline")
+
+def  restricting_tree_depth(original_images, original_labels):
+
+    images = preprocess_images(original_images)
+    labels = preprocess_labels(original_labels)
+
+    (training_images, training_labels), (val_images, val_labels), (testing_images, testing_labels) = split_data(images, labels)
+
+    cl = tree.DecisionTreeClassifier(max_depth=10)
+    clf = cl.fit(training_images, training_labels)
+
+    clf.predict(val_images)
+    clf.score(val_images, val_labels)
+    errors = test_model(cl, testing_images, testing_labels, "decision_tree_restricting_tree_depth" )
+    save_misclassified(errors, "decision_tree_restricting_tree_depth")
+
+
+def min_samples_leaf(original_images, original_labels):
+
+    images = preprocess_images(original_images)
+    labels = preprocess_labels(original_labels)
+
+    (training_images, training_labels), (val_images, val_labels), (testing_images, testing_labels) = split_data(images, labels)
+
+    cl = tree.DecisionTreeClassifier(min_samples_leaf=10)
+    clf = cl.fit(training_images, training_labels)
+
+    clf.predict(val_images)
+    clf.score(val_images, val_labels)
+    errors = test_model(cl, testing_images, testing_labels, "decision_tree_min_samples_leaf" )
+    save_misclassified(errors, "decision_tree_min_samples_leaf")
+    
+
+def features_dt(original_images, original_labels):
+    compress = preprocess_images(average_chunk(original_images, 14, 14))
+    all_avg = average_all(original_images)
+    avg_row = average_row(original_images)
+    avg_col = average_column(original_images)
+
+    images = preprocess_images(original_images)
+    labels = preprocess_labels(original_labels)
+    import ipdb; ipdb.set_trace()
+    features = np.concatenate((images,compress, all_avg.T, avg_row, avg_col), axis=1)
+
+    (training_images, training_labels), (val_images, val_labels), (testing_images, testing_labels) = split_data(features, labels)
+
+    cl = tree.DecisionTreeClassifier(min_samples_leaf=10)
+    clf = cl.fit(training_images, training_labels)
+
+    clf.predict(val_images)
+    clf.score(val_images, val_labels)
+    errors = test_model(cl, testing_images, testing_labels, "decision_tree_features" )
+    save_misclassified(errors, "decision_tree_features")
+
+
+     
+
+def average_all(original_images):
+    the_avg = []
+    for img in average_row(original_images):
+        the_avg.append(statistics.mean(img))
+    return np.array([the_avg])
+
+
+def average_row(original_images):
+    images = []
+    for image in original_images:
+        row_avg = []
+        for row in image:
+            row_avg.append(statistics.mean(row))
+        images.append(row_avg)
+    return np.array(images)
+    
+
+def average_column(original_images):
+    images = []
+    for image in original_images:
+        image = np.rot90(image)
+        row_avg = []
+        for row in image:
+            row_avg.append(statistics.mean(row))
+        images.append(row_avg)
+    return np.array(images)
+
+def cell_averaging(original_images):
+    images = []
+    for image in original_images:
+        image = np.rot90(image)
+        row_avg = []
+        for row in image:
+            row_avg.append(statistics.mean(row))
+        images.append(row_avg)
+    return np.array(images)
+
+def average_chunk(original_images, i_height, i_width):
+    images = []
+    for image in original_images:
+        images.append(np.array(Image.fromarray(image).resize((i_height, i_width))))
+
+    return images
+
+
 
 
 def test_model(model, testing_images, testing_labels, dt_name):
@@ -47,7 +165,7 @@ def test_model(model, testing_images, testing_labels, dt_name):
         if a == r:
             num_correct += 1
         else:
-            errors.append((testing_images[i]*255, a, r))
+            errors.append((testing_images[i][0:784]*255, a, r))
 
         i += 1
 
@@ -140,6 +258,17 @@ def create_confusion_matrix(confusion_matrix, results, num_correct, dt_name):
     plot.axis('off')
     plot.savefig("{}_confusion_matrix.png".format(dt_name))
     plot.close()
+
+def save_misclassified(errors, dt_name):
+    reshaped = []
+    # Reshape the errors
+    for e in errors[:4]:
+        reshaped.append((np.uint8(e[0].reshape(28, 28)), e[1], e[2]))
+
+    # Save each misclassified
+    for r in reshaped:
+        image = Image.fromarray(np.array(r[0]))
+        image.save("{}_actual_".format(dt_name) + str(r[1]) + "_predicted_" + str(r[2]) + ".png")
 
 
 if __name__ == "__main__":
