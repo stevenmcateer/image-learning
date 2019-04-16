@@ -208,7 +208,7 @@ def create_confusion_matrix(confusion_matrix, results, num_correct):
 		"\nAccuracy:", num_correct/len(results))
 
     # Save all data to file
-    f = open("ann_output.txt", "w+")
+    f = open("ann_output.txt", "w")
     f.write("Confusion Matrix:\n")
     f.write(str(np.array(confusion_matrix)))
     f.write("\nTotal Tests: " + str(len(results)))
