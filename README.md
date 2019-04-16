@@ -1,5 +1,19 @@
 Steven McAteer, William Schwartz
 
+# Run
+
+## to the CNN
+
+```bash
+$ python model.py
+```
+
+## to run the Decision Trees
+
+```bash
+$ python decision_tree.py
+```
+
 # Artificial Neural Network
 
 ## Description of Experiments
@@ -89,14 +103,98 @@ Our features improved performance slightly, but we assume that all variations of
 
 ## Model Performance and Confusion Matrix
 
-The best performing model that we had for decision trees has the following characteristics:
+### Baseline
 
 Confusion Matrix:
-![Confusion Matrix](/dt_confusion_matrix.png)
+![Confusion Matrix](/decision_tree_baseline_confusion_matrix.png)
 
+```
+Total Tests: 1625
+Number of Accurate Labels: 1243
+Accuracy: 0.7649230769230769
+```
+![Precision/Recall](/decision_tree_baseline_precision_and_recall.png)
 
+The following 3 images were misclassified:
 
+![Actual 1, Predicted 4](/decision_tree_baseline_actual_3_predicted_5.png)
+![Actual 5, Predicted 3](/decision_tree_baseline_actual_5_predicted_2.png)
+![Actual 8, Predicted 2](/decision_tree_baseline_actual_8_predicted_1.png)
 
+### Restricted Tree Depth
 
+Confusion Matrix:
+![Confusion Matrix](/decision_tree_restricting_tree_depth_confusion_matrix.png)
 
+```
+Total Tests: 1625
+Number of Accurate Labels: 1260
+Accuracy: 0.7753846153846153
+```
+![Precision/Recall](/decision_tree_restricting_tree_depth_precision_and_recall.png)
 
+The following 3 images were misclassified:
+
+#### actual 1 predicted 3
+
+![Actual 1, Predicted 4](/decision_tree_restricting_tree_depth_actual_1_predicted_3.png)
+
+#### actual 3 predicted 9
+
+![Actual 5, Predicted 3](/decision_tree_restricting_tree_depth_actual_3_predicted_9.png)
+
+#### actual 5 predicted 9
+
+![Actual 8, Predicted 2](/decision_tree_restricting_tree_depth_actual_5_predicted_9.png)
+
+### Min Samples Leaf
+
+Confusion Matrix:
+![Confusion Matrix](/decision_tree_min_samples_leaf_confusion_matrix.png)
+
+```
+Total Tests: 1625
+Number of Accurate Labels: 1167
+Accuracy: 0.7181538461538461
+```
+![Precision/Recall](/decision_tree_min_samples_leaf_precision_and_recall.png)
+
+The following 3 images were misclassified:
+
+#### actual 1 predicted 8
+
+![Actual 1, Predicted 4](/decision_tree_min_samples_leaf_actual_1_predicted_8.png)
+
+#### actual 3 predicted 0
+
+![Actual 5, Predicted 3](/decision_tree_min_samples_leaf_actual_3_predicted_0.png)
+
+#### actual 4 predicted 0
+
+![Actual 8, Predicted 2](/decision_tree_min_samples_leaf_actual_4_predicted_0.png)
+
+### Custom Features
+
+Confusion Matrix:
+![Confusion Matrix](/decision_tree_features_confusion_matrix.png)
+
+```
+Total Tests: 1625
+Number of Accurate Labels: 1273
+Accuracy: 0.7833846153846153
+```
+![Precision/Recall](/decision_tree_features_precision_and_recall.png)
+
+The following 3 images were misclassified:
+
+#### actual 1 predicted 5
+
+![Actual 1, Predicted 4](/decision_tree_features_actual_1_predicted_5.png)
+
+#### actual 7 predicted 0
+
+![Actual 5, Predicted 3](/decision_tree_features_actual_7_predicted_0.png)
+
+#### actual 8 predicted 5
+
+![Actual 8, Predicted 2](/decision_tree_features_actual_8_predicted_5.png)
